@@ -60,6 +60,16 @@ class QTests(SimpleTestCase):
         ))
         self.assertEqual(kwargs, {'_connector': 'AND'})
 
+    def test_deconstruct_and_2(self):
+        q = Q(price__gt=F('discounted_price'), price=F('discounted_price'))
+        path, args, kwargs = q.deconstruct()
+        self.assertEqual(path, 'django.db.models.query_utils.Q')
+        self.assertEqual(args, (
+            ('price__gt', F('discounted_price')),
+            ('price', F('discounted_price')),
+        ))
+        self.assertEqual(kwargs, {'_connector': 'AND'})
+
     def test_deconstruct_nested(self):
         q = Q(Q(price__gt=F('discounted_price')))
         path, args, kwargs = q.deconstruct()
